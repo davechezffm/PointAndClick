@@ -7,78 +7,122 @@ public class ClickManager : MonoBehaviour
     public Transform player;
     GameManager gameManager;
     public bool playerWalking;
+    DialogueManager dialogueManager;
+    public bool itemSuccess;
+
+
 
     private void Start()
     {
         gameManager = FindObjectOfType<GameManager>();
+        dialogueManager = FindObjectOfType<DialogueManager>();
     }
 
 
     public void GoToItem(ItemData item)
-    {//Hide Hint Box
-        gameManager.UpdateHintBox(null, false);
-        //Set the bool to true
-        playerWalking = true;
-        //Select the animation to use
-        player.GetComponent<SpriteAnimator>().PlayAnimation(gameManager.playerAnimations[1]);
-        //Start Moving the Player
-        StartCoroutine(gameManager.MoveToPoint(player, item.goToPoint.position));
-      
-        //Check if the item can be pickedup
-        TryGettingItem(item);
-        
+    {
+        if (dialogueManager.dialogueIsPlaying == false&&playerWalking==false)
+        {
+            //Play Click Sound
+            gameManager.PlaySound(GameManager.soundsNames.click);
+            //Hide Hint Box
+            gameManager.UpdateHintBox(null, false);
+            //Set the bool to true
+            playerWalking = true;
+            //Select the animation to use
+            player.GetComponent<SpriteAnimator>().PlayAnimation(gameManager.playerAnimations[1]);
+            //Start Moving the Player
+            StartCoroutine(gameManager.MoveToPoint(player, item.goToPoint.position));
+
+            //Check if the item can be pickedup
+            TryGettingItem(item);
+
+        }
     }
 
-  
+
 
     private void TryGettingItem(ItemData item)
     {//-1 allows an item to be instantly picked up.
-        bool canGetItem = item.requiredItemID == -1 || GameManager.collectedItems.Contains(item.requiredItemID);
+        bool canGetItem = item.requiredItemID == -1 || gameManager.selectedItemID == item.requiredItemID;
         if (canGetItem)
         {
-            GameManager.collectedItems.Add(item.itemID);
+            GameManager.collectedItems.Add(item);
            
+
         }
 
-        StartCoroutine(UpdateSceneAfterItem(item,canGetItem));
+        if (gameManager.selectedItemID == item.requiredItemID)
+        {
+            itemSuccess = true;
+            GameManager.collectedItems.RemoveAt(gameManager.selectedCanvasSlotID);
+
+        }
+
+        StartCoroutine(UpdateSceneAfterItem(item, canGetItem));
     }
 
     private IEnumerator UpdateSceneAfterItem(ItemData item, bool canGetItem)
     {
-        while (playerWalking){    //Wait for the player to reach the item.
+        while (playerWalking)
+        {    //Wait for the player to reach the item.
             yield return new WaitForSeconds(0.1f);
         }
         //Play Base Animation
         player.GetComponent<SpriteAnimator>().PlayAnimation(gameManager.playerAnimations[0]);
         yield return new WaitForSeconds(0.5f);
+
+
         //Destroy the game object of the item you pick up.
         if (canGetItem)
-        {//Play the use animation
+        {//play Sound
+            gameManager.PlaySound(GameManager.soundsNames.use);
+            itemSuccess = false;
+
+            //Play the use animation
             player.GetComponent<SpriteAnimator>().PlayAnimation(gameManager.playerAnimations[2]);
-            
+
             //Stops name tag appearing after collecting the item.
             gameManager.UpdateNameTag(null);
 
             //Remove certain objects. The one the player has picked up, for example.
-            foreach (GameObject g in item.objectsToRemove)
 
-                Destroy(g);
             //Show Objects on screen
-            foreach (GameObject g in item.objectsToSetActive)
 
-                g.SetActive(true);
-            if(item.successAnimation)
-            item.GetComponent<SpriteAnimator>().PlayAnimation(item.successAnimation);
+            if (item.successAnimation)
+            {
+                item.GetComponent<SpriteAnimator>().PlayAnimation(item.successAnimation);
+                foreach (GameObject g in item.objectsToSetActive)
 
-            Debug.Log("Item Collected");
+                    g.SetActive(true);
+                foreach (GameObject g in item.objectsToRemove)
+                {
+                    Destroy(g, 4f);
+                }
+            }
+            if (item.successAnimation == null)
+            {
+                foreach (GameObject g in item.objectsToRemove)
+
+                    Destroy(g);
+                foreach (GameObject g in item.objectsToSetActive)
+
+                    g.SetActive(true);
+            }
+            gameManager.UpdateEquipmentCanvas();
         }
 
 
-        else { gameManager.UpdateHintBox(item, player.GetComponentInChildren<SpriteRenderer>().flipX);
-           
+        else
+        {
+            gameManager.UpdateHintBox(item, player.GetComponentInChildren<SpriteRenderer>().flipX);
+
         }
-        //Changes the scene, checks if the game is completed.
-        gameManager.CheckSpecialConditions(item, canGetItem);
-        yield return null;
+            //s the scene, checks if the game is completed.
+            gameManager.CheckSpecialConditions(item, canGetItem);
+            yield return null;
     }
+
 }
+
+

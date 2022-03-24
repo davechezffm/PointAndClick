@@ -476,7 +476,7 @@ ScriptsOnlyBuild:
     className: SpriteSkin
   - hash:
       serializedVersion: 2
-      Hash: 2e114933d05ebf8f4ace61df2c061d27
+      Hash: 002e326eb30e898278a6fbc5da2ed844
     assemblyName: Assembly-CSharp.dll
     namespaceName: 
     className: ItemData
@@ -566,7 +566,7 @@ ScriptsOnlyBuild:
     className: BasicCameraFollow
   - hash:
       serializedVersion: 2
-      Hash: 488d48b06cde4bc0053a24c4cdde0c36
+      Hash: bb9f2817180a66d3797ef583ca6ac274
     assemblyName: Assembly-CSharp.dll
     namespaceName: 
     className: GameManager
@@ -687,4 +687,4 @@ ScriptsOnlyBuild:
   platform: 5
   scenePathNames:
   - Assets/Scenes/SampleScene.unity
-  playerPath: C:/Projects/Game/Point and click/Point&Click.exe
+  playerPath: C:/Users/Dave/Documents/PointAndClick/Point&Click/Point&Click.exe

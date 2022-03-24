@@ -23,3 +23,5 @@ MonoBehaviour:
   - {fileID: 2788568348960109317, guid: 76e0decc81a43cc4db2da7eac0766314, type: 3}
   framesOfGap: 9
   loop: 1
+  returnToBase: 0
+  sounds: 00000000000000000300000000000000000000000000000003000000

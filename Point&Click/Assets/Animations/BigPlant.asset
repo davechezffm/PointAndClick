@@ -26,3 +26,5 @@ MonoBehaviour:
   - {fileID: 0}
   framesOfGap: 30
   loop: 0
+  returnToBase: 0
+  sounds: 05000000

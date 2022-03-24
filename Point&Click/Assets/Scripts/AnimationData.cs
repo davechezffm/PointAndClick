@@ -10,4 +10,5 @@ public class AnimationData : ScriptableObject
     public static float targetFrameTime = 0.0167f;
     public bool loop;
     public bool returnToBase;
+    public GameManager.soundsNames[] sounds;
 }
